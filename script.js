@@ -63,48 +63,61 @@ document.addEventListener('DOMContentLoaded', () => {
         contactForm.reset();
     });
 });
+
+
+const words = [
 // Add this inside your existing document.addEventListener('DOMContentLoaded', () => { ... })
+    "Tech Enthusiast",
+    "CSE-AI Student",
+    "Full-Stack Developer",
+    "Frontend Developer"
+];
 
-const words = ["CSE-AI Student", "Tech Enthusiast", "Full-Stack Developer"];
-let i = 0;
-let timer;
+let wordIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
 
-function typingEffect() {
-    let word = words[i].split("");
-    var loopTyping = function() {
-        if (word.length > 0) {
-            document.querySelector('.typing-text').innerHTML += word.shift();
-        } else {
-            setTimeout(deletingEffect, 2000);
-            return false;
+const typingText = document.querySelector(".typing-text");
+
+function typeEffect() {
+
+    const currentWord = words[wordIndex];
+
+    if (!isDeleting) {
+
+        typingText.textContent =
+            currentWord.substring(0, charIndex + 1);
+
+        charIndex++;
+
+        if (charIndex === currentWord.length) {
+
+            isDeleting = true;
+
+            setTimeout(typeEffect, 1500);
+
+            return;
         }
-        timer = setTimeout(loopTyping, 100);
-    };
-    loopTyping();
+
+    } else {
+
+        typingText.textContent =
+            currentWord.substring(0, charIndex - 1);
+
+        charIndex--;
+
+        if (charIndex === 0) {
+
+            isDeleting = false;
+
+            wordIndex = (wordIndex + 1) % words.length;
+        }
+    }
+
+    setTimeout(typeEffect, isDeleting ? 50 : 100);
 }
 
-function deletingEffect() {
-    let word = words[i].split("");
-    var loopDeleting = function() {
-        if (word.length > 0) {
-            word.pop();
-            document.querySelector('.typing-text').innerHTML = word.join("");
-        } else {
-            if (words.length > (i + 1)) {
-                i++;
-            } else {
-                i = 0;
-            }
-            setTimeout(typingEffect, 500);
-            return false;
-        }
-        timer = setTimeout(loopDeleting, 60);
-    };
-    loopDeleting();
-}
-
-// Initialize the striking text rotation execution
-typingEffect();
+typeEffect();;
 // Tab Switching Controller Matrix Engine
 const tabControls = document.querySelectorAll('.tab-control');
 const techPanels = document.querySelectorAll('.tech-panel');
